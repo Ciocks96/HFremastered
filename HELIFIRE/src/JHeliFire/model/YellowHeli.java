@@ -19,9 +19,13 @@ public class YellowHeli extends Enemy {
     private static final int DEFAULT_BURST_MAX = 3;
     private static final int DEFAULT_BURST_DELAY = 6;
     private static final double SPEED_LEVEL_FACTOR = 0.3;
-    private static final double SHOOT_PROB_BASE = 0.008;
-    private static final double SHOOT_PROB_LEVEL_POW = 1.2;
+    private static final double BULLET_SPEED = 3.0;
+    private static final double BASE_SHOOT_PROBABILITY = 0.008;
+
+    // Costanti per il bilanciamento del livello
+    private static final double SHOOT_PROB_LEVEL_POW = 0.5;
     private static final double SHOOT_PROB_LEVEL_FACTOR = 0.0003;
+    private static final double SHOOT_PROB_BASE = BASE_SHOOT_PROBABILITY;
 
     // ======================================
     // Enums
@@ -45,7 +49,6 @@ public class YellowHeli extends Enemy {
     // ======================================
     // Movimento e Livello
     // ======================================
-    private final int level;
     private final int baseSpeed = 3;
     private final int verticalSpeed = 2;
 
@@ -80,7 +83,17 @@ public class YellowHeli extends Enemy {
             shootCooldown--;
             return;
         }
-        
+
+        // Nei primi 3 livelli, usa il sistema di sparo normale
+        if (level <= 3) {
+            if (Math.random() < shootProbability) {
+                shoot();
+                shootCooldown = maxShootCooldown;
+            }
+            return;
+        }
+
+        // Dal livello 4 in poi, usa il sistema di raffica
         if (burstShots > 0) {
             handleBurstShots();
         } else {
@@ -92,7 +105,7 @@ public class YellowHeli extends Enemy {
         if (burstCooldown > 0) {
             burstCooldown--;
         } else {
-            shoot();
+            shootAdvanced(); // Dal livello 4 usa sempre il pattern avanzato
             burstShots--;
             burstCooldown = burstDelay;
             if (burstShots == 0) {
@@ -104,9 +117,47 @@ public class YellowHeli extends Enemy {
     private void tryStartNewBurst() {
         if (Math.random() < shootProbability) {
             burstShots = burstMax;
-            shoot();
+            shootAdvanced(); // Dal livello 4 usa sempre il pattern avanzato
             burstShots--;
             burstCooldown = burstDelay;
+        }
+    }
+
+    @Override
+    protected void shoot() {
+        if (level <= 3) {
+            shootBasic(); // Pattern base per i primi 3 livelli
+        } else {
+            shootAdvanced(); // Pattern avanzato dal livello 4 in poi
+        }
+    }
+
+    @Override
+    protected void shootAdvanced() {
+        // YellowHeli spara un proiettile mirato verso il giocatore
+        int bulletSpawnX = x + width / 2 - EnemyBullet.getBulletWidth() / 2;
+        int bulletSpawnY = y + (int)(height * 0.65);
+
+        // Ottiene la posizione del giocatore
+        Player player = gameModel.getPlayer();
+        if (player != null) {
+            // Calcola la direzione verso il centro del giocatore
+            double targetX = player.getX() + player.getWidth()/2;
+            double targetY = player.getY() + player.getHeight()/2;
+            
+            // Calcola direzione e normalizza la velocità
+            double dx = targetX - bulletSpawnX;
+            double dy = targetY - bulletSpawnY;
+            double length = Math.sqrt(dx * dx + dy * dy);
+            
+            // Aggiungi un po' di predizione del movimento del giocatore
+            // ma mantieni una componente verticale minima per non sparare orizzontalmente
+            dx = (dx / length) * BULLET_SPEED;
+            dy = Math.max((dy / length) * BULLET_SPEED, BULLET_SPEED * 0.5); // Forza una componente verticale minima
+            
+            // Crea il proiettile
+            EnemyBullet bullet = new EnemyBullet(bulletSpawnX, bulletSpawnY, dx, dy);
+            gameModel.addEnemyBullet(bullet);
         }
     }
 
@@ -242,4 +293,6 @@ public class YellowHeli extends Enemy {
     public boolean isFacingLeft() {
         return facingLeft;
     }
+
+
 }

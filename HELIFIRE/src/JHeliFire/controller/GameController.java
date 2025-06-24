@@ -283,7 +283,19 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
     // Event Callbacks
     // ======================================
     public void onBonusComplete() {
-        model.addScore(500);
+        boolean hasFullLives = model.getPlayer().getLives() == 3;
+        
+        if (hasFullLives) {
+            // Se il giocatore ha tutte le vite, assegna 500 punti
+            model.addScore(500);
+        } else {
+            // Se il giocatore ha perso delle vite, ne recupera una
+            model.getPlayer().addLife();
+        }
+        
+        // Imposta il tipo di bonus per la visualizzazione
+        view.getBonusManager().setPointBonus(hasFullLives);
+        
         model.startNextLevel();
         view.repaint();
     }
@@ -341,5 +353,9 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
         if (view.getBackgroundX() <= -view.getWidth()) {
             view.setBackgroundX(0);
         }
+    }
+
+    private void startBonusScene() {
+        view.getBonusManager().setPointBonus(model.getPlayer().getLives() == 3);
     }
 }

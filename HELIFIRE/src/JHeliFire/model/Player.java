@@ -119,6 +119,15 @@ public class Player {
     }
     
     // ======================================
+    // Gestione Vite
+    // ======================================
+    public void addLife() {
+        if (lives < 3) {
+            lives++;
+        }
+    }
+    
+    // ======================================
     // Controlli di Movimento
     // ======================================
     public void setLeftPressed(boolean pressed) {

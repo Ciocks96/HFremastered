@@ -275,8 +275,16 @@ private void drawBonusScene(Graphics g) {
     if (bonus.getPhase() == BonusSceneManager.Phase.SHOW_POINTS) {
         Font fontToUse = arcadeFont != null ? arcadeFont.deriveFont(Font.BOLD, 40) : new Font("Arial", Font.BOLD, 40);
         g.setFont(fontToUse);
-        g.setColor(Color.YELLOW);
-        String text = "BONUS 500";
+        
+        String text;
+        if (bonus.isPointBonus()) {
+            g.setColor(Color.YELLOW);
+            text = "BONUS 500";
+        } else {
+            g.setColor(Color.GREEN);
+            text = "MORE LIFE";
+        }
+        
         FontMetrics fm = g.getFontMetrics();
         int x = (800 - fm.stringWidth(text)) / 2;
         int y = 150;

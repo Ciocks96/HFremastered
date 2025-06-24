@@ -91,4 +91,16 @@ public class GreenHeli extends Enemy {
     public boolean isFacingLeft() {
         return true;
     }
+
+    // ======================================
+    // Gestione Sparo
+    // ======================================
+    @Override
+    protected void shoot() {
+        // GreenHeli usa sempre il pattern base (sparo dritto verso il basso)
+        int bulletSpawnX = x + width / 2 - EnemyBullet.getBulletWidth() / 2;
+        int bulletSpawnY = y + (int)(height * 0.65);
+        EnemyBullet bullet = new EnemyBullet(bulletSpawnX, bulletSpawnY, 0, 3);
+        gameModel.addEnemyBullet(bullet);
+    }
 }

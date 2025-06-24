@@ -22,10 +22,32 @@ enum ShipDestroyerSpeed {
         return points;
     }
 
-    // Ottiene una velocità casuale
-    public static ShipDestroyerSpeed getRandom() {
-        ShipDestroyerSpeed[] speeds = values();
-        return speeds[(int)(Math.random() * speeds.length)];
+    // Ottiene un tipo casuale di ShipDestroyer in base al livello con probabilità pesate
+    public static ShipDestroyerSpeed getRandomForLevel(int level) {
+        if (level < 3) {
+            return SLOW; // Non dovrebbe mai succedere, ma per sicurezza
+        }
+        
+        double random = Math.random();
+        
+        if (level == 3) {
+            // Livello 3: solo SLOW
+            return SLOW;
+        } 
+        else if (level == 4) {
+            // Livello 4: 60% SLOW, 40% MEDIUM
+            return (random < 0.6) ? SLOW : MEDIUM;
+        }
+        else {
+            // Livello 5+: 45% SLOW, 35% MEDIUM, 20% FAST
+            if (random < 0.45) {
+                return SLOW;       // 45% probabilità
+            } else if (random < 0.80) {
+                return MEDIUM;     // 35% probabilità
+            } else {
+                return FAST;       // 20% probabilità
+            }
+        }
     }
 }
 
@@ -42,8 +64,8 @@ public class ShipDestroyer extends Enemy {
         this.width = LOGICAL_WIDTH;
         this.height = LOGICAL_HEIGHT;
         
-        // Seleziona una velocità casuale usando l'enum e memorizza il tipo
-        this.shipType = ShipDestroyerSpeed.getRandom();
+        // Seleziona casualmente un tipo di ShipDestroyer tra quelli disponibili per il livello
+        this.shipType = ShipDestroyerSpeed.getRandomForLevel(level);
         this.speed = shipType.getSpeed();
         
         // La ShipDestroyer non spara mai
@@ -60,6 +82,11 @@ public class ShipDestroyer extends Enemy {
         if (x + width < 0) {
             visible = false;
         }
+    }
+    
+    @Override
+    protected void shoot() {
+        // La ShipDestroyer non spara mai, quindi questo metodo è vuoto
     }
     
     @Override

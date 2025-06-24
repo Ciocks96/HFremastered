@@ -74,8 +74,7 @@ public abstract class Enemy {
         } else {
             double randomValue = Math.random();
             if (randomValue < shootProbability) {
-                // Decidi casualmente se sparare una bomba o un proiettile
-                if (Math.random() < BOMB_PROBABILITY) {  // 30% di probabilità per sparare una bomba
+                if (Math.random() < BOMB_PROBABILITY) {
                     shootBomb();
                 } else {
                     shoot();
@@ -85,25 +84,37 @@ public abstract class Enemy {
         }
     }
 
+    /**
+     * Metodo base per lo sparo che ogni sottoclasse deve implementare
+     */
+    protected abstract void shoot();
+    
+    /**
+     * Pattern di sparo base usato da tutti i nemici nei primi 3 livelli
+     */
+    protected void shootBasic() {
+        // Sparo dritto verso il basso (pattern base del GreenHeli)
+        int bulletSpawnX = x + width / 2 - EnemyBullet.getBulletWidth() / 2;
+        int bulletSpawnY = y + (int)(height * BULLET_SPAWN_HEIGHT_RATIO);
+        EnemyBullet bullet = new EnemyBullet(bulletSpawnX, bulletSpawnY, 0, 3); // velocità verticale = 3
+        gameModel.addEnemyBullet(bullet);
+    }
+    
+    /**
+     * Pattern di sparo avanzato specifico per ogni tipo di nemico.
+     * Ogni sottoclasse può sovrascrivere questo metodo per implementare
+     * il proprio pattern di sparo personalizzato dal livello 4 in poi.
+     */
+    protected void shootAdvanced() {
+        // Di default usa il pattern base
+        shootBasic();
+    }
+
     protected void shootBomb() {
         int bombSpawnX = x + width / 2 - EnemyBomb.getBombWidth() / 2;
         int bombSpawnY = y + (int)(height * BULLET_SPAWN_HEIGHT_RATIO);
         EnemyBomb bomb = new EnemyBomb(bombSpawnX, bombSpawnY);
-        gameModel.addEnemyBomb(bomb);  // Dovrai implementare il metodo addEnemyBomb() in GameModel
-    }
-    
-    /**
-     * Metodo per far sparare il nemico (crea un EnemyBullet).
-     */
-    public void shoot() {
-        // Calcola la posizione di spawn del proiettile (centro orizzontale in basso)
-        int bulletSpawnX = x + width / 2 - EnemyBullet.getBulletWidth() / 2;
-        int bulletSpawnY = y + (int)(height * BULLET_SPAWN_HEIGHT_RATIO); // 75% dell'altezza del nemico
-        // Crea un nuovo proiettile
-        EnemyBullet bullet = new EnemyBullet(bulletSpawnX, bulletSpawnY);
-
-        // Aggiunge il proiettile al GameModel tramite il riferimento
-        gameModel.addEnemyBullet(bullet);
+        gameModel.addEnemyBomb(bomb);
     }
     
     // ======================================

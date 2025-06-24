@@ -12,7 +12,7 @@ public class BlueHeli extends Enemy {
     private static final int SPREAD_BULLETS = 3;
     private static final double SPREAD_ANGLE = Math.toRadians(60);
     private static final double BULLET_SPEED = 3.0;
-    private static final double BULLET_SPAWN_HEIGHT = 0.55;
+    private static final double BULLET_SPAWN_HEIGHT_RATIO = 0.55;
     private static final int WRAP_AROUND_X = 850;
 
     // ======================================
@@ -31,6 +31,7 @@ public class BlueHeli extends Enemy {
     // ======================================
     public BlueHeli(int x, int y, int level, GameModel gameModel) {
         super(x, y, gameModel);
+        this.level = level;
         this.width = LOGICAL_WIDTH;
         this.height = LOGICAL_HEIGHT;
 
@@ -73,32 +74,27 @@ public class BlueHeli extends Enemy {
     // Sistema di Sparo
     // ======================================
     @Override
-    protected void handleShooting() {
-        if (shootCooldown > 0) {
-            shootCooldown--;
-        } else {
-            if (Math.random() < shootProbability) {
-                if (Math.random() < BOMB_PROBABILITY) {
-                    shootBomb();
-                } else {
-                    shootSpread(SPREAD_BULLETS);
-                }
-                shootCooldown = maxShootCooldown;
-            }
-        }
-    }
-
-    private void shootSpread(int numBullets) {
+    protected void shootAdvanced() {
+        // Pattern di sparo del BlueHeli: spara 3 proiettili a ventaglio
         int bulletSpawnX = x + width / 2 - EnemyBullet.getBulletWidth() / 2;
-        int bulletSpawnY = y + (int)(height * BULLET_SPAWN_HEIGHT);
+        int bulletSpawnY = y + (int)(height * BULLET_SPAWN_HEIGHT_RATIO);
         double startAngle = Math.PI / 2 - SPREAD_ANGLE / 2;
 
-        for (int i = 0; i < numBullets; i++) {
-            double angle = startAngle + i * (SPREAD_ANGLE / (numBullets - 1));
+        for (int i = 0; i < SPREAD_BULLETS; i++) {
+            double angle = startAngle + i * (SPREAD_ANGLE / (SPREAD_BULLETS - 1));
             double vx = Math.cos(angle) * BULLET_SPEED;
             double vy = Math.sin(angle) * BULLET_SPEED;
             EnemyBullet bullet = new EnemyBullet(bulletSpawnX, bulletSpawnY, vx, vy);
             gameModel.addEnemyBullet(bullet);
+        }
+    }
+
+    @Override
+    protected void shoot() {
+        if (level <= 3) {
+            shootBasic(); // Pattern base per i primi 3 livelli
+        } else {
+            shootAdvanced(); // Pattern avanzato dal livello 4 in poi
         }
     }
 
