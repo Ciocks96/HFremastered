@@ -134,31 +134,30 @@ public class YellowHeli extends Enemy {
 
     @Override
     protected void shootAdvanced() {
-        // YellowHeli spara un proiettile mirato verso il giocatore
+        // YellowHeli spara tre colpi verticali consecutivi (burst shot)
         int bulletSpawnX = x + width / 2 - EnemyBullet.getBulletWidth() / 2;
         int bulletSpawnY = y + (int)(height * 0.65);
 
-        // Ottiene la posizione del giocatore
-        Player player = gameModel.getPlayer();
-        if (player != null) {
-            // Calcola la direzione verso il centro del giocatore
-            double targetX = player.getX() + player.getWidth()/2;
-            double targetY = player.getY() + player.getHeight()/2;
-            
-            // Calcola direzione e normalizza la velocità
-            double dx = targetX - bulletSpawnX;
-            double dy = targetY - bulletSpawnY;
-            double length = Math.sqrt(dx * dx + dy * dy);
-            
-            // Aggiungi un po' di predizione del movimento del giocatore
-            // ma mantieni una componente verticale minima per non sparare orizzontalmente
-            dx = (dx / length) * BULLET_SPEED;
-            dy = Math.max((dy / length) * BULLET_SPEED, BULLET_SPEED * 0.5); // Forza una componente verticale minima
-            
-            // Crea il proiettile
+        for (int i = 0; i < burstMax; i++) {
+            // Crea il proiettile con velocità verticale fissa
+            double dx = 0; // Nessun movimento orizzontale
+            double dy = BULLET_SPEED; // Movimento verticale fisso
+
             EnemyBullet bullet = new EnemyBullet(bulletSpawnX, bulletSpawnY, dx, dy);
             gameModel.addEnemyBullet(bullet);
+
+            // Sposta leggermente il punto di spawn per ogni colpo
+            bulletSpawnY += 10;
+
+            // Imposta un cooldown tra i colpi
+            burstCooldown = burstDelay;
+            while (burstCooldown > 0) {
+                burstCooldown--;
+            }
         }
+
+        // Imposta il cooldown generale dopo la raffica
+        shootCooldown = maxShootCooldown;
     }
 
     // ======================================

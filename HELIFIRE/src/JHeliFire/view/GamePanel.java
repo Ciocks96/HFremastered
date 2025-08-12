@@ -21,6 +21,7 @@ import static JHeliFire.model.GameState.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 import java.util.List;
 
 public class GamePanel extends JPanel implements ActionListener, MouseListener, GameModelListener {
@@ -99,9 +100,29 @@ private ScoreManager scoreManager = new ScoreManager();
         enableEvents(AWTEvent.KEY_EVENT_MASK);
         SoundManager.preloadSounds();
         backgroundClip = SoundManager.playLoop("/assets/sounds/background.wav");
-        backgroundImage = new ImageIcon(getClass().getResource("/assets/figure/background.png")).getImage();
-        muteIcon = new ImageIcon(getClass().getResource("/assets/figure/mute.png")).getImage();
-        unmuteIcon = new ImageIcon(getClass().getResource("/assets/figure/unmute.png")).getImage();
+        // Caricamento immagine di sfondo
+        URL backgroundUrl = getClass().getResource("/assets/figure/background.png");
+        if (backgroundUrl == null) {
+            System.err.println("Immagine non trovata: /assets/figure/background.png");
+        } else {
+            backgroundImage = new ImageIcon(backgroundUrl).getImage();
+        }
+
+        // Caricamento immagine mute
+        URL muteUrl = getClass().getResource("/assets/figure/mute.png");
+        if (muteUrl == null) {
+            System.err.println("Immagine non trovata: /assets/figure/mute.png");
+        } else {
+            muteIcon = new ImageIcon(muteUrl).getImage();
+        }
+
+        // Caricamento immagine unmute
+        URL unmuteUrl = getClass().getResource("/assets/figure/unmute.png");
+        if (unmuteUrl == null) {
+            System.err.println("Immagine non trovata: /assets/figure/unmute.png");
+        } else {
+            unmuteIcon = new ImageIcon(unmuteUrl).getImage();
+        }
         model.addListener(this);
         try {
             arcadeFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("assets/font/PixelFont.ttf"))
@@ -118,15 +139,18 @@ private ScoreManager scoreManager = new ScoreManager();
         timer = new Timer(16, this);
         timer.start();
         // --- Pulsante options (ingranaggio) ---
-        optionsButton = new JButton(new ImageIcon(getClass().getResource("/assets/figure/options.png")));
-        optionsButton.setFocusPainted(false);
-        optionsButton.setContentAreaFilled(false);
-        optionsButton.setBorderPainted(false);
-        optionsButton.setFocusable(false);
-        int btnWidth = 32, btnHeight = 32, margin = 10;
-        optionsButton.setBounds(WIDTH - btnWidth - margin, margin, btnWidth, btnHeight);
-        add(optionsButton);
-        // NON aggiungere qui l'ActionListener!
+        URL optionsUrl = getClass().getResource("/assets/figure/options.png");
+        if (optionsUrl == null) {
+            System.err.println("Immagine non trovata: /assets/figure/options.png");
+        } else {
+            optionsButton = new JButton(new ImageIcon(optionsUrl));
+            optionsButton.setFocusPainted(false);
+            optionsButton.setFocusable(false);
+            int btnWidth = 32, btnHeight = 32, margin = 10;
+            optionsButton.setBounds(WIDTH - btnWidth - margin, margin, btnWidth, btnHeight);
+            add(optionsButton);
+        }
+        
     }
     
 @Override
@@ -137,7 +161,6 @@ public void actionPerformed(ActionEvent e) {
 
 @Override
 protected void paintComponent(Graphics g) {
-    System.out.println("paintComponent chiamato"); // DEBUG
     super.paintComponent(g);
     optionsButton.setVisible(true);
     optionsButton.setEnabled(true);
@@ -147,32 +170,26 @@ protected void paintComponent(Graphics g) {
     }
     switch (controller.getCurrentState()) {
         case START_SCREEN:
-            System.out.println("Disegno START_SCREEN");
             drawMenu(g);
             break;
         case GAME_PLAY:
-            System.out.println("Disegno GAME_PLAY");
             drawEntities(g);
             drawHUD(g);
             break;
         case OPTIONS:
-            System.out.println("Disegno OPTIONS");
             drawOptions(g);
             break;
         case GAME_OVER:
-            System.out.println("Disegno GAME_OVER");
             drawGameOver(g);
             break;
         case VICTORY:
-            System.out.println("Disegno VICTORY");
             drawVictory(g);
             break;
         case ENTER_NAME_SCREEN:
-            System.out.println("Disegno ENTER_NAME_SCREEN");
             drawEnterNameScreen(g);
             break;
         case BONUS_CUTSCENE:
-            System.out.println("Disegno BONUS_CUTSCENE");
+            
             g.drawImage(backgroundImage, backgroundX, 0, getWidth(), getHeight(), this);
             g.drawImage(backgroundImage, backgroundX + getWidth(), 0, getWidth(), getHeight(), this);
             drawHUD(g);
@@ -611,7 +628,6 @@ muteButtonArea.setBounds(clickableX, clickableY, clickableAreaSize, clickableAre
     
     @Override
 public void mousePressed(MouseEvent e) {
-    System.out.println("mousePressed: " + e.getPoint()); // DEBUG
     controller.onMousePressed(e.getPoint());
 }
 

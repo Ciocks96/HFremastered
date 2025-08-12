@@ -40,7 +40,7 @@ public class ScoreManager {
             topScores.sort((a, b) -> b.score - a.score);
             while (topScores.size() > 3) topScores.remove(3);
         } catch (IOException e) {
-            // File non esiste ancora, lo creeremo al primo salvataggio
+            System.out.println("Il file highscores.txt non esiste. Verrà creato al primo salvataggio.");
         }
     }
 
@@ -51,7 +51,7 @@ public class ScoreManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Errore durante il salvataggio dei punteggi: " + e.getMessage());
         }
     }
 
