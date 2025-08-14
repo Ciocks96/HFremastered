@@ -84,7 +84,7 @@ public class GameModel {
        score = 0;
        
        waveIndex = 0; 
-       level = 4;
+       level = 1;
        waveInProgress = false;
        inVictory = false;
        // Valori base per i nemici

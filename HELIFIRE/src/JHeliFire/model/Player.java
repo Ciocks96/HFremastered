@@ -86,6 +86,14 @@ public class Player {
         } else {
             dy = 0;
         }
+        
+        /* Normalizza la velocità diagonale
+        if (dx != 0 && dy != 0) {
+            double diagonalSpeed = speed / Math.sqrt(2);
+            dx = (int) (dx > 0 ? diagonalSpeed : -diagonalSpeed);
+            dy = (int) (dy > 0 ? diagonalSpeed : -diagonalSpeed);
+        }
+        */
     }
     
     private void updatePosition() {
