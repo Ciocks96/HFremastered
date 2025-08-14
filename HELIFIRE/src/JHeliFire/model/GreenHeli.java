@@ -11,10 +11,10 @@ public class GreenHeli extends Enemy {
     private static final int WRAP_AROUND_X = 850;
     
     // Costanti per il bilanciamento del livello
-    private static final double SPEED_LEVEL_FACTOR = 0.1;
+    private static final double SPEED_LEVEL_FACTOR = 0.17;
     private static final double SHOOT_PROB_BASE = 0.004;
-    private static final double SHOOT_PROB_LEVEL_FACTOR = 0.0003;
-    private static final int COOLDOWN_BASE = 100;
+    private static final double SHOOT_PROB_LEVEL_FACTOR = 0.0004;
+    private static final int COOLDOWN_BASE = 80;
     private static final int COOLDOWN_LEVEL_FACTOR = 4;
 
     // ======================================
@@ -26,7 +26,7 @@ public class GreenHeli extends Enemy {
     // ======================================
     // Movimento e Livello
     // ======================================
-    private final int level;
+    
     private final int baseSpeed = 2;
 
     // ======================================
@@ -34,13 +34,13 @@ public class GreenHeli extends Enemy {
     // ======================================
     public GreenHeli(int x, int y, int level, GameModel gameModel) {
         super(x, y, gameModel);
-        this.level = level;
         this.width = LOGICAL_WIDTH;
         this.height = LOGICAL_HEIGHT;
         
         speed = (int) Math.min(baseSpeed * (1 + (level - 1) * SPEED_LEVEL_FACTOR), 4);
         shootProbability = Math.min(SHOOT_PROB_BASE + (level * SHOOT_PROB_LEVEL_FACTOR), 0.007);
-        maxShootCooldown = Math.max(COOLDOWN_BASE - (level * COOLDOWN_LEVEL_FACTOR), 60);
+        maxShootCooldown = Math.max(COOLDOWN_BASE - (level * COOLDOWN_LEVEL_FACTOR), 50);
+
     }
     
     // ======================================

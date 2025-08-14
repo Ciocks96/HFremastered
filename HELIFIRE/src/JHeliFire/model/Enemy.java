@@ -2,6 +2,8 @@ package JHeliFire.model;
 
 import java.awt.Rectangle;
 
+import JHeliFire.utility.SoundManager;
+
 public abstract class Enemy {
     // ======================================
     // Costanti
@@ -79,6 +81,7 @@ public abstract class Enemy {
                 } else {
                     shoot();
                 }
+                SoundManager.playSound("/assets/sounds/enemyshot.wav");
                 shootCooldown = maxShootCooldown;
             }
         }

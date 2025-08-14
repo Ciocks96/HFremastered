@@ -8,13 +8,16 @@ public class BlueHeli extends Enemy {
     public static final int LOGICAL_HEIGHT = 64;
     private static final int ANIM_FRAMES = 3;
     private static final int ANIM_DELAY = 8;
-    private static final double BOMB_PROBABILITY = 0.2;
     private static final int SPREAD_BULLETS = 3;
     private static final double SPREAD_ANGLE = Math.toRadians(60);
     private static final double BULLET_SPEED = 3.0;
     private static final double BULLET_SPAWN_HEIGHT_RATIO = 0.55;
     private static final int WRAP_AROUND_X = 850;
-
+    private static final double SPEED_LEVEL_FACTOR = 0.2;
+    private static final double SHOOT_PROB_BASE = 0.005;
+    private static final double SHOOT_PROB_LEVEL_FACTOR = 0.000375;
+    private static final int COOLDOWN_BASE = 90;
+    private static final int COOLDOWN_LEVEL_FACTOR = 2;
     // ======================================
     // Animazione
     // ======================================
@@ -36,9 +39,11 @@ public class BlueHeli extends Enemy {
         this.height = LOGICAL_HEIGHT;
 
         // Calcola parametri basati sul livello
-        speed = Math.min((int)(baseSpeed * (1 + (level - 1) * 0.15)), 6);
-        shootProbability = Math.min(0.005 + (level * 0.000375), 0.008);
-        maxShootCooldown = Math.max(90 - (level * 2), 60);
+        
+        speed = (int) Math.min(baseSpeed * (1 + (level - 1) * SPEED_LEVEL_FACTOR), 5);
+        shootProbability = Math.min(SHOOT_PROB_BASE + (level * SHOOT_PROB_LEVEL_FACTOR), 0.008);
+        maxShootCooldown = Math.max(COOLDOWN_BASE - (level * COOLDOWN_LEVEL_FACTOR), 50);
+
     }
 
     // ======================================

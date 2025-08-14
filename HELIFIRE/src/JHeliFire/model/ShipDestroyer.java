@@ -24,28 +24,24 @@ enum ShipDestroyerSpeed {
 
     // Ottiene un tipo casuale di ShipDestroyer in base al livello con probabilità pesate
     public static ShipDestroyerSpeed getRandomForLevel(int level) {
-        if (level < 3) {
-            return SLOW; // Non dovrebbe mai succedere, ma per sicurezza
-        }
-        
-        double random = Math.random();
-        
-        if (level == 3) {
-            // Livello 3: solo SLOW
+        if (level == 2) {
+            // Livello 2: solo SLOW
             return SLOW;
         } 
-        else if (level == 4) {
-            // Livello 4: 60% SLOW, 40% MEDIUM
+        else if (level == 3) {
+            // Livello 3: 60% SLOW, 40% MEDIUM
+            double random = Math.random();
             return (random < 0.6) ? SLOW : MEDIUM;
-        }
+        } 
         else {
-            // Livello 5+: 45% SLOW, 35% MEDIUM, 20% FAST
-            if (random < 0.45) {
-                return SLOW;       // 45% probabilità
-            } else if (random < 0.80) {
+            // Livello 4+: 45% SLOW, 35% MEDIUM, 20% FAST
+            double random = Math.random();
+            if (random < 0.40) {
+                return SLOW;       // 40% probabilità
+            } else if (random < 0.75) {
                 return MEDIUM;     // 35% probabilità
             } else {
-                return FAST;       // 20% probabilità
+                return FAST;       // 25% probabilità
             }
         }
     }
