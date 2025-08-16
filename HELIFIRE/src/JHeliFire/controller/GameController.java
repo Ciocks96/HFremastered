@@ -105,7 +105,7 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
     private void handleGameOver() {
         if (gameOverTimer == null) {
             JHeliFire.utility.SoundManager.playSound("/assets/sounds/gameover.wav");
-            gameOverTimer = new javax.swing.Timer(1000, ae -> {
+            gameOverTimer = new javax.swing.Timer(1000, _ -> {
                 int score = getScore();
                 if (view.getScoreManager().isTop3(score)) {
                     pendingScore = score;
@@ -127,7 +127,7 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
     private void handleVictory() {
         if (victoryTimer == null) {
             JHeliFire.utility.SoundManager.playSound("/assets/sounds/victory.wav");
-            victoryTimer = new javax.swing.Timer(1000, e -> {
+            victoryTimer = new javax.swing.Timer(1000, _ -> {
                 int score = getScore();
                 if (view.getScoreManager().isTop3(score)) {
                     pendingScore = score;
@@ -292,7 +292,7 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
             // Se il giocatore ha perso delle vite, ne recupera una
             model.getPlayer().addLife();
         }
-        
+        System.out.println("Impostazione bonus: " + hasFullLives);
         // Imposta il tipo di bonus per la visualizzazione
         view.getBonusManager().setPointBonus(hasFullLives);
         
@@ -354,8 +354,8 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
             view.setBackgroundX(0);
         }
     }
-
+/* 
     private void startBonusScene() {
         view.getBonusManager().setPointBonus(model.getPlayer().getLives() == 3);
-    }
+    }*/
 }

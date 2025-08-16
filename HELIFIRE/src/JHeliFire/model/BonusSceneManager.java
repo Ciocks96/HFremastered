@@ -85,11 +85,13 @@ public class BonusSceneManager {
     public Phase getPhase() { return phase; }
     public boolean isComplete() { return phase == Phase.COMPLETE; }
     public boolean isPointBonus() {
+        System.out.println("Bonus verificato: " + isPointBonus);
         return isPointBonus;
     }
 
     public void setPointBonus(boolean isPointBonus) {
         this.isPointBonus = isPointBonus;
+        System.out.println("Bonus impostato: " + isPointBonus);
     }
 
     public void reset() {

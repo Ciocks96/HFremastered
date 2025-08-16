@@ -223,76 +223,200 @@ private void drawEntities(Graphics g) {
 }
 
 private void drawPlayer(Graphics g, Player player) {
-    Image playerImg = new ImageIcon(getClass().getResource("/assets/figure/player.png")).getImage();
-    g.drawImage(playerImg, player.getX(), player.getY(), player.getWidth(), player.getHeight(), this);
+    Image playerImg = null;
+    try {
+        playerImg = new ImageIcon(getClass().getResource("/assets/figure/player.png")).getImage();
+    } catch (Exception e) {
+        System.err.println("Errore nel caricamento dell'immagine del giocatore: " + e.getMessage());
+    }
+
+    if (playerImg != null) {
+        g.drawImage(playerImg, player.getX(), player.getY(), player.getWidth(), player.getHeight(), this);
+    } else {
+        // Disegna un rettangolo colorato come fallback
+        g.setColor(Color.RED);
+        g.fillRect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
+    }
 }
 
 private void drawEnemy(Graphics g, Enemy enemy) {
     if (enemy instanceof JHeliFire.model.BlueHeli blue) {
         int idx = blue.getAnimIndex();
-        Image img = new ImageIcon(getClass().getResource("/assets/figure/blueheli" + idx + ".png")).getImage();
-        g.drawImage(img, blue.getX(), blue.getY(), blue.getWidth(), blue.getHeight(), this);
+        Image img = null;
+        try {
+            img = new ImageIcon(getClass().getResource("/assets/figure/blueheli" + idx + ".png")).getImage();
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento dell'immagine di BlueHeli: " + e.getMessage());
+        }
+
+        if (img != null) {
+            g.drawImage(img, blue.getX(), blue.getY(), blue.getWidth(), blue.getHeight(), this);
+        } else {
+            g.setColor(Color.BLUE);
+            g.fillRect(blue.getX(), blue.getY(), blue.getWidth(), blue.getHeight());
+        }
     } else if (enemy instanceof JHeliFire.model.GreenHeli green) {
         int idx = green.getAnimIndex();
-        Image img = new ImageIcon(getClass().getResource("/assets/figure/greenheli" + idx + ".png")).getImage();
-        g.drawImage(img, green.getX(), green.getY(), green.getWidth(), green.getHeight(), this);
+        Image img = null;
+        try {
+            img = new ImageIcon(getClass().getResource("/assets/figure/greenheli" + idx + ".png")).getImage();
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento dell'immagine di GreenHeli: " + e.getMessage());
+        }
+
+        if (img != null) {
+            g.drawImage(img, green.getX(), green.getY(), green.getWidth(), green.getHeight(), this);
+        } else {
+            g.setColor(Color.GREEN);
+            g.fillRect(green.getX(), green.getY(), green.getWidth(), green.getHeight());
+        }
     } else if (enemy instanceof JHeliFire.model.YellowHeli yellow) {
         int idx = yellow.getAnimIndex();
         boolean facingLeft = yellow.isFacingLeft();
-        Image img = new ImageIcon(getClass().getResource("/assets/figure/yellowheli" + idx + ".png")).getImage();
+        Image img = null;
+        try {
+            img = new ImageIcon(getClass().getResource("/assets/figure/yellowheli" + idx + ".png")).getImage();
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento dell'immagine di YellowHeli: " + e.getMessage());
+        }
+
         Graphics2D g2d = (Graphics2D) g.create();
         int x = yellow.getX(), y = yellow.getY(), w = yellow.getWidth(), h = yellow.getHeight();
-        if (!facingLeft) {
-            g2d.translate(x + w, y);
-            g2d.scale(-1, 1);
-            g2d.drawImage(img, 0, 0, w, h, this);
+        if (img != null) {
+            if (!facingLeft) {
+                g2d.translate(x + w, y);
+                g2d.scale(-1, 1);
+                g2d.drawImage(img, 0, 0, w, h, this);
+            } else {
+                g2d.drawImage(img, x, y, w, h, this);
+            }
         } else {
-            g2d.drawImage(img, x, y, w, h, this);
+            g2d.setColor(Color.YELLOW);
+            g2d.fillRect(x, y, w, h);
         }
         g2d.dispose();
     } else if (enemy instanceof JHeliFire.model.ShipDestroyer ship) {
-        Image img = new ImageIcon(getClass().getResource("/assets/figure/shipdestroyer.png")).getImage();
-        g.drawImage(img, ship.getX(), ship.getY(), ship.getWidth(), ship.getHeight(), this);
+        Image img = null;
+        try {
+            img = new ImageIcon(getClass().getResource("/assets/figure/shipdestroyer.png")).getImage();
+        } catch (Exception e) {
+            System.err.println("Errore nel caricamento dell'immagine di ShipDestroyer: " + e.getMessage());
+        }
+
+        if (img != null) {
+            g.drawImage(img, ship.getX(), ship.getY(), ship.getWidth(), ship.getHeight(), this);
+        } else {
+            g.setColor(Color.GRAY);
+            g.fillRect(ship.getX(), ship.getY(), ship.getWidth(), ship.getHeight());
+        }
     }
 }
 
 private void drawBullet(Graphics g, Bullet b) {
-    Image img = new ImageIcon(getClass().getResource("/assets/figure/bullet.png")).getImage();
-    g.drawImage(img, b.getX(), b.getY(), b.getWidth(), b.getHeight(), this);
+    Image img = null;
+    try {
+        img = new ImageIcon(getClass().getResource("/assets/figure/bullet.png")).getImage();
+    } catch (Exception e) {
+        System.err.println("Errore nel caricamento dell'immagine del proiettile: " + e.getMessage());
+    }
+
+    if (img != null) {
+        g.drawImage(img, b.getX(), b.getY(), b.getWidth(), b.getHeight(), this);
+    } else {
+        g.setColor(Color.YELLOW);
+        g.fillRect(b.getX(), b.getY(), b.getWidth(), b.getHeight());
+    }
 }
 
 private void drawEnemyBullet(Graphics g, EnemyBullet eb) {
-    Image img = new ImageIcon(getClass().getResource("/assets/figure/enemyBullet.png")).getImage();
-    g.drawImage(img, eb.getX(), eb.getY(), eb.getWidth(), eb.getHeight(), this);
+    Image img = null;
+    try {
+        img = new ImageIcon(getClass().getResource("/assets/figure/enemyBullet.png")).getImage();
+    } catch (Exception e) {
+        System.err.println("Errore nel caricamento dell'immagine del proiettile nemico: " + e.getMessage());
+    }
+
+    if (img != null) {
+        g.drawImage(img, eb.getX(), eb.getY(), eb.getWidth(), eb.getHeight(), this);
+    } else {
+        g.setColor(Color.ORANGE);
+        g.fillRect(eb.getX(), eb.getY(), eb.getWidth(), eb.getHeight());
+    }
 }
 
 private void drawEnemyBomb(Graphics g, EnemyBomb bomb) {
-    Image img = new ImageIcon(getClass().getResource("/assets/figure/enemyBomb.png")).getImage();
-    g.drawImage(img, bomb.getX(), bomb.getY(), bomb.getWidth(), bomb.getHeight(), this);
+    Image img = null;
+    try {
+        img = new ImageIcon(getClass().getResource("/assets/figure/enemyBomb.png")).getImage();
+    } catch (Exception e) {
+        System.err.println("Errore nel caricamento dell'immagine della bomba nemica: " + e.getMessage());
+    }
+
+    if (img != null) {
+        g.drawImage(img, bomb.getX(), bomb.getY(), bomb.getWidth(), bomb.getHeight(), this);
+    } else {
+        g.setColor(Color.GRAY);
+        g.fillRect(bomb.getX(), bomb.getY(), bomb.getWidth(), bomb.getHeight());
+    }
 }
 
 private void drawExplosion(Graphics g, Explosion ex) {
-    int idx = ex.getAnimIndex();
-    Image img = new ImageIcon(getClass().getResource("/assets/figure/explosion" + idx + ".png")).getImage();
-    g.drawImage(img, ex.getX(), ex.getY(), ex.getWidth(), ex.getHeight(), this);
+    Image img = null;
+    try {
+        int idx = ex.getAnimIndex();
+        img = new ImageIcon(getClass().getResource("/assets/figure/explosion" + idx + ".png")).getImage();
+    } catch (Exception e) {
+        System.err.println("Errore nel caricamento dell'immagine dell'esplosione: " + e.getMessage());
+    }
+
+    if (img != null) {
+        g.drawImage(img, ex.getX(), ex.getY(), ex.getWidth(), ex.getHeight(), this);
+    } else {
+        g.setColor(Color.RED);
+        g.fillOval(ex.getX(), ex.getY(), ex.getWidth(), ex.getHeight());
+    }
 }
 
 private void drawBonusScene(Graphics g) {
     BonusSceneManager bonus = bonusManager;
     int frame = (bonus.getFrameCounter() / 20) % 3;
-    Image islandImg;
-    if (!bonus.isWomanVisible()) {
-        islandImg = new ImageIcon(getClass().getResource("/assets/figure/island3.png")).getImage();
-    } else {
-        islandImg = new ImageIcon(getClass().getResource("/assets/figure/island" + frame + ".png")).getImage();
+    Image islandImg = null;
+    try {
+        if (!bonus.isWomanVisible()) {
+            islandImg = new ImageIcon(getClass().getResource("/assets/figure/island3.png")).getImage();
+        } else {
+            islandImg = new ImageIcon(getClass().getResource("/assets/figure/island" + frame + ".png")).getImage();
+        }
+    } catch (Exception e) {
+        System.err.println("Errore nel caricamento dell'immagine dell'isola: " + e.getMessage());
     }
-    g.drawImage(islandImg, bonus.getIslandX(), bonus.getIslandY(), 64, 44, this);
-    Image subImg = new ImageIcon(getClass().getResource("/assets/figure/player.png")).getImage();
-    g.drawImage(subImg, bonus.getSubX(), bonus.getSubY(), 64, 37, this);
+
+    if (islandImg != null) {
+        g.drawImage(islandImg, bonus.getIslandX(), bonus.getIslandY(), 64, 44, this);
+    } else {
+        g.setColor(Color.GREEN);
+        g.fillRect(bonus.getIslandX(), bonus.getIslandY(), 64, 44);
+    }
+
+    Image subImg = null;
+    try {
+        subImg = new ImageIcon(getClass().getResource("/assets/figure/player.png")).getImage();
+    } catch (Exception e) {
+        System.err.println("Errore nel caricamento dell'immagine del sottomarino: " + e.getMessage());
+    }
+
+    if (subImg != null) {
+        g.drawImage(subImg, bonus.getSubX(), bonus.getSubY(), 64, 37, this);
+    } else {
+        g.setColor(Color.BLUE);
+        g.fillRect(bonus.getSubX(), bonus.getSubY(), 64, 37);
+    }
+
     if (bonus.getPhase() == BonusSceneManager.Phase.SHOW_POINTS) {
         Font fontToUse = arcadeFont != null ? arcadeFont.deriveFont(Font.BOLD, 40) : new Font("Arial", Font.BOLD, 40);
+        System.out.println("fase corrente: " + bonus.getPhase());
         g.setFont(fontToUse);
-        
+
         String text;
         if (bonus.isPointBonus()) {
             g.setColor(Color.YELLOW);
@@ -301,10 +425,11 @@ private void drawBonusScene(Graphics g) {
             g.setColor(Color.GREEN);
             text = "MORE LIFE";
         }
-        
+
         FontMetrics fm = g.getFontMetrics();
         int x = (800 - fm.stringWidth(text)) / 2;
         int y = 150;
+        System.out.println("Visualizzazione bonus: " + text);
         g.drawString(text, x, y);
     }
 }
@@ -658,7 +783,7 @@ public void mousePressed(MouseEvent e) {
             for (ActionListener al : optionsButton.getActionListeners()) {
                 optionsButton.removeActionListener(al);
             }
-            optionsButton.addActionListener(e -> {
+            optionsButton.addActionListener(_ -> {
                 if (this.controller != null) {
                     if (controller.getCurrentState() == OPTIONS) {
                         controller.exitOptions();
