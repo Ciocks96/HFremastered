@@ -414,22 +414,14 @@ private void drawBonusScene(Graphics g) {
 
     if (bonus.getPhase() == BonusSceneManager.Phase.SHOW_POINTS) {
         Font fontToUse = arcadeFont != null ? arcadeFont.deriveFont(Font.BOLD, 40) : new Font("Arial", Font.BOLD, 40);
-        System.out.println("fase corrente: " + bonus.getPhase());
         g.setFont(fontToUse);
 
-        String text;
-        if (bonus.isPointBonus()) {
-            g.setColor(Color.YELLOW);
-            text = "BONUS 500";
-        } else {
-            g.setColor(Color.GREEN);
-            text = "MORE LIFE";
-        }
+        g.setColor(Color.YELLOW);
+        String text = "BONUS ACHIEVED";
 
         FontMetrics fm = g.getFontMetrics();
         int x = (800 - fm.stringWidth(text)) / 2;
         int y = 150;
-        System.out.println("Visualizzazione bonus: " + text);
         g.drawString(text, x, y);
     }
 }
@@ -463,21 +455,21 @@ private void drawHUD(Graphics g) {
         // Attiva l'antialiasing per un testo più levigato
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
-        // 1. Disegna il titolo "SPACE ALIEN" e "INVADERS" con arcadeFont in grassetto, 60pt
+        // 1. Disegna il titolo "JHELIFIRE" con la J in verde e il resto in rosso, tutto alla stessa altezza
         Font titleFont = arcadeFont.deriveFont(Font.BOLD, 60);
         g2.setFont(titleFont);
         FontMetrics fm = g2.getFontMetrics();
-        String titleLine1 = "HELIFIRE";
-        String titleLine2 = "REMASTERED";
-        int titleX1 = (getWidth() - fm.stringWidth(titleLine1)) / 2;
-        int titleY1 = 250;
-        int titleX2 = (getWidth() - fm.stringWidth(titleLine2)) / 2;
-        int titleY2 = 320;
-        
-        g2.setColor(Color.GREEN);
-        g2.drawString(titleLine1, titleX1, titleY1);
+        String title = "JHELIFIRE";
+        int titleX = (getWidth() - fm.stringWidth(title)) / 2;
+        int titleY = 320; // Usa la stessa altezza di titleY2
+
+        // Disegna la "J" in verde
         g2.setColor(Color.RED);
-        g2.drawString(titleLine2, titleX2, titleY2);
+        g2.drawString(title.substring(0, 1), titleX, titleY);
+
+        // Disegna "HELIFIRE" in rosso
+        g2.setColor(Color.GREEN);
+        g2.drawString(title.substring(1), titleX + fm.stringWidth(title.substring(0, 1)), titleY);
         
         // 2. Disegna il testo "High Score: ..." con arcadeFont in stile Plain, 30pt
         Font scoreFont = arcadeFont.deriveFont(Font.PLAIN, 30);

@@ -84,16 +84,7 @@ public class BonusSceneManager {
     public int getFrameCounter() { return frameCounter; }
     public Phase getPhase() { return phase; }
     public boolean isComplete() { return phase == Phase.COMPLETE; }
-    public boolean isPointBonus() {
-        System.out.println("Bonus verificato: " + isPointBonus);
-        return isPointBonus;
-    }
-
-    public void setPointBonus(boolean isPointBonus) {
-        this.isPointBonus = isPointBonus;
-        System.out.println("Bonus impostato: " + isPointBonus);
-    }
-
+ 
     public void reset() {
         phase = Phase.ISLAND_ENTRANCE;
         islandX = -100;

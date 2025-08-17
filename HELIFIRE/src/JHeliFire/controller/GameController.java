@@ -292,9 +292,7 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
             // Se il giocatore ha perso delle vite, ne recupera una
             model.getPlayer().addLife();
         }
-        System.out.println("Impostazione bonus: " + hasFullLives);
-        // Imposta il tipo di bonus per la visualizzazione
-        view.getBonusManager().setPointBonus(hasFullLives);
+        
         
         model.startNextLevel();
         view.repaint();

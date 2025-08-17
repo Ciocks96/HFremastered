@@ -33,7 +33,7 @@ public class GameModel {
 
     // Per il cooldown dello ShipDestroyer
     private int shipDestroyerSpawnCooldown = 0;
-    private static final int SHIP_DESTROYER_SPAWN_DELAY = 180; // in frame
+    private static final int SHIP_DESTROYER_SPAWN_DELAY = 160; // in frame
 
     private boolean inVictory = false;
     private boolean bonusReady = false;
@@ -359,9 +359,9 @@ private void handleWaveAndLevelProgression() {
         shipDestroyerSpawnCooldown--;
         return;
     }
-    if (level >= 3 && Math.random() < 0.02 && getShipDestroyerCount() < getMaxShipDestroyers()) {
+    if (level >= 2 && Math.random() < 0.02 && getShipDestroyerCount() < getMaxShipDestroyers()) {
         spawnShipDestroyer();
-        shipDestroyerSpawnCooldown = Math.max(60, SHIP_DESTROYER_SPAWN_DELAY - level * 10);
+        shipDestroyerSpawnCooldown = Math.max(80, SHIP_DESTROYER_SPAWN_DELAY - level * 10);
     }
 }
 
@@ -448,7 +448,7 @@ private void handleWaveAndLevelProgression() {
             if (enemies.size() > 8) {
                 break;
             }
-            int randomY = 200 + (int)(Math.random() * 100); // appare un po' più in basso
+            int randomY = 175 + (int)(Math.random() * 100); // Alzato per evitare che sia dentro il mare
             int spawnX = width + i * 50;
             enemies.add(new YellowHeli(spawnX, randomY, level, this));
         }
