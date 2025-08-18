@@ -15,12 +15,8 @@ public class Explosion {
     public Explosion(int centerX, int centerY) {
         this(centerX, centerY, 1.0f);
     }
-    
-    /**
-     * Costruttore con fattore di scala personalizzato.
-     * Le coordinate (centerX, centerY) rappresentano il centro dell'esplosione.
-     * @param scale Fattore di scala (ad es. 0.5 per il 50% delle dimensioni originali)
-     */
+
+    // Costruttore con fattore di scala personalizzato
     public Explosion(int centerX, int centerY, float scale) {
         this.scale = scale;
         int w = LOGICAL_WIDTH;
@@ -39,7 +35,7 @@ public class Explosion {
         return frameCount < duration;
     }
     
-    // Getter per rendering logico
+    // Getter
     public int getAnimIndex() {
         int idx = frameCount / 5;
         if (idx >= 4) idx = 3;

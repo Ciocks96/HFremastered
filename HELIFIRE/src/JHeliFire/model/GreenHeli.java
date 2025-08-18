@@ -1,37 +1,23 @@
 package JHeliFire.model;
 
 public class GreenHeli extends Enemy {
-    // ======================================
-    // Costanti
-    // ======================================
+
     public static final int LOGICAL_WIDTH = 64;
     public static final int LOGICAL_HEIGHT = 64;
     private static final int ANIM_FRAMES = 3;
     private static final int ANIM_DELAY = 8;
     private static final int WRAP_AROUND_X = 850;
     
-    // Costanti per il bilanciamento del livello
     private static final double SPEED_LEVEL_FACTOR = 0.17;
     private static final double SHOOT_PROB_BASE = 0.004;
     private static final double SHOOT_PROB_LEVEL_FACTOR = 0.0004;
     private static final int COOLDOWN_BASE = 80;
     private static final int COOLDOWN_LEVEL_FACTOR = 4;
 
-    // ======================================
-    // Animazione
-    // ======================================
     private int animIndex = 0;
     private int animCounter = 0;
-
-    // ======================================
-    // Movimento e Livello
-    // ======================================
-    
     private final int baseSpeed = 2;
 
-    // ======================================
-    // Costruttore
-    // ======================================
     public GreenHeli(int x, int y, int level, GameModel gameModel) {
         super(x, y, gameModel);
         this.width = LOGICAL_WIDTH;
@@ -43,9 +29,6 @@ public class GreenHeli extends Enemy {
 
     }
     
-    // ======================================
-    // Metodi di Update
-    // ======================================
     @Override
     public void update() {
         movement();
@@ -61,9 +44,6 @@ public class GreenHeli extends Enemy {
         }
     }
 
-    // ======================================
-    // Movimento
-    // ======================================
     @Override
     public void movement() {
         x -= speed;
@@ -72,9 +52,6 @@ public class GreenHeli extends Enemy {
         }
     }
 
-    // ======================================
-    // Getters
-    // ======================================
     @Override
     public int getScoreValue() {
         return 10;
@@ -92,9 +69,6 @@ public class GreenHeli extends Enemy {
         return true;
     }
 
-    // ======================================
-    // Gestione Sparo
-    // ======================================
     @Override
     protected void shoot() {
         // GreenHeli usa sempre il pattern base (sparo dritto verso il basso)

@@ -6,7 +6,7 @@ public class EnemyBomb {
     private boolean visible = true;
     private int speedY;
 
-    // Dimensioni logiche costanti
+   
     public static final int LOGICAL_WIDTH = 14;
     public static final int LOGICAL_HEIGHT = 24;
 
@@ -23,7 +23,7 @@ public class EnemyBomb {
         }
     }
 
-    // Hitbox più piccola e centrata
+    
     public java.awt.Rectangle getHitBox() {
         int hitBoxWidth = 14;
         int hitBoxHeight = 14;

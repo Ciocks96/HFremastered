@@ -35,60 +35,31 @@ private Clip backgroundClip;
 private Image muteIcon;
 private Image unmuteIcon;
     
-    // Campo per l'immagine di sfondo
-    private Image backgroundImage;
-    private int backgroundX = 0;
-    private int backgroundSpeed = 1; // Puoi aumentare questo valore per uno scorrimento più veloce
+private Image backgroundImage;
+private int backgroundX = 0;
+private int backgroundSpeed = 1;
 
-    private BonusSceneManager bonusManager;
+private BonusSceneManager bonusManager;
 
-    /*  Gestione degli stati tramite variabili booleane
-    private boolean inMenu = true;
-    private boolean inGame = false;
-    private boolean inGameOver = false;
-    private boolean inOptions = false; */
-   
-    // --- 1. Stati del gioco via costanti intere ---
-    // RIMOSSO: le costanti di stato duplicate (START_SCREEN, GAME_PLAY, ...)
-    // public static final int START_SCREEN = 0;
-    // public static final int GAME_PLAY    = 1;
-    // public static final int OPTIONS      = 2;
-    // public static final int GAME_OVER    = 3;
-    // public static final int VICTORY      = 4;
-    // public static final int ENTER_NAME_SCREEN = 5;
-    // public static final int BONUS_CUTSCENE = 6;
-
-
-    // Definizione dei "pulsanti" tramite rettangoli
-    // Schermata Menu: pulsante PLAY
 private Rectangle playButtonBounds = new Rectangle(350, 300, 100, 40);
-    // Schermata Game Over: pulsante RETRY e MENU
+// Schermata Game Over: pulsante RETRY e MENU
 private Rectangle retryButtonBounds = new Rectangle(300, 350, 100, 40);
 private Rectangle menuButtonBounds = new Rectangle(420, 350, 100, 40);
-    // Schermata Victory: pulsante REPLAY e MENU
+// Schermata Victory: pulsante REPLAY e MENU
 private Rectangle replayVictoryBounds = new Rectangle(300, 350, 100, 40);
-    private Rectangle menuVictoryBounds = new Rectangle(420, 350, 100, 40);
-    
-    // Campo per il font personalizzato
+private Rectangle menuVictoryBounds = new Rectangle(420, 350, 100, 40);
+ // Campo per il font personalizzato
 private Font arcadeFont;
-
-    // Flag per il mute
+// Flag per il mute
 private boolean isMuted = false;
-
-     // Dichiarazione della variabile a livello di classe
-    // Gestione del punteggio
+// Gestione del punteggio
 private ScoreManager scoreManager = new ScoreManager(); 
+// Area per "Mute/Unmute" nell'overlay opzioni (coordinate fisse)
+private Rectangle muteButtonArea = new Rectangle();
 
-    
-    // Area per "Mute/Unmute" nell'overlay opzioni (coordinate fisse)
-    private Rectangle muteButtonArea = new Rectangle();
-
-
-
-    private GameController controller;
-
-    // --- Pulsante options (ingranaggio) ---
-    private JButton optionsButton;
+private GameController controller;
+// --- Pulsante options (ingranaggio) ---
+private JButton optionsButton;
 
     public GamePanel(GameModel model, GameController controller) {
         this.model = model;
@@ -107,15 +78,13 @@ private ScoreManager scoreManager = new ScoreManager();
         } else {
             backgroundImage = new ImageIcon(backgroundUrl).getImage();
         }
-
-        // Caricamento immagine mute
+         // Caricamento immagine mute
         URL muteUrl = getClass().getResource("/assets/figure/mute.png");
         if (muteUrl == null) {
             System.err.println("Immagine non trovata: /assets/figure/mute.png");
         } else {
             muteIcon = new ImageIcon(muteUrl).getImage();
         }
-
         // Caricamento immagine unmute
         URL unmuteUrl = getClass().getResource("/assets/figure/unmute.png");
         if (unmuteUrl == null) {
@@ -123,7 +92,9 @@ private ScoreManager scoreManager = new ScoreManager();
         } else {
             unmuteIcon = new ImageIcon(unmuteUrl).getImage();
         }
+        //aggiungi il listener al model
         model.addListener(this);
+        // Caricamento del font personalizzato
         try {
             arcadeFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getClassLoader().getResourceAsStream("assets/font/PixelFont.ttf"))
                             .deriveFont(Font.PLAIN, 20);
@@ -138,7 +109,7 @@ private ScoreManager scoreManager = new ScoreManager();
         addMouseListener(this);
         timer = new Timer(16, this);
         timer.start();
-        // --- Pulsante options (ingranaggio) ---
+        // Pulsante options
         URL optionsUrl = getClass().getResource("/assets/figure/options.png");
         if (optionsUrl == null) {
             System.err.println("Immagine non trovata: /assets/figure/options.png");
@@ -202,7 +173,6 @@ protected void paintComponent(Graphics g) {
 }
 
 private void drawEntities(Graphics g) {
-    // --- Disegna player con blink se invulnerabile ---
     Player player = model.getPlayer();
     if (player.isAlive()) {
         if (player.isInvulnerable()) {
@@ -214,7 +184,7 @@ private void drawEntities(Graphics g) {
             drawPlayer(g, player);
         }
     }
-    // --- Disegna tutte le entità ---
+    //Disegna tutte le entità
     for (Enemy enemy : model.getEnemies()) drawEnemy(g, enemy);
     for (Bullet b : model.getBullets()) drawBullet(g, b);
     for (EnemyBullet eb : model.getEnemyBullets()) drawEnemyBullet(g, eb);
@@ -233,7 +203,6 @@ private void drawPlayer(Graphics g, Player player) {
     if (playerImg != null) {
         g.drawImage(playerImg, player.getX(), player.getY(), player.getWidth(), player.getHeight(), this);
     } else {
-        // Disegna un rettangolo colorato come fallback
         g.setColor(Color.RED);
         g.fillRect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
     }
@@ -426,7 +395,6 @@ private void drawBonusScene(Graphics g) {
     }
 }
 
-    // Estrai il disegno dell’HUD in un metodo a parte
 private void drawHUD(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
     // Disegna il punteggio e il livello in alto a sinistra
@@ -452,26 +420,19 @@ private void drawHUD(Graphics g) {
     
     private void drawMenu(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        // Attiva l'antialiasing per un testo più levigato
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        
-        // 1. Disegna il titolo "JHELIFIRE" con la J in verde e il resto in rosso, tutto alla stessa altezza
+        //titolo "JHELIFIRE" con la J in verde e il resto in rosso
         Font titleFont = arcadeFont.deriveFont(Font.BOLD, 60);
         g2.setFont(titleFont);
         FontMetrics fm = g2.getFontMetrics();
         String title = "JHELIFIRE";
         int titleX = (getWidth() - fm.stringWidth(title)) / 2;
-        int titleY = 320; // Usa la stessa altezza di titleY2
-
-        // Disegna la "J" in verde
+        int titleY = 320; 
         g2.setColor(Color.RED);
         g2.drawString(title.substring(0, 1), titleX, titleY);
-
-        // Disegna "HELIFIRE" in rosso
         g2.setColor(Color.GREEN);
         g2.drawString(title.substring(1), titleX + fm.stringWidth(title.substring(0, 1)), titleY);
         
-        // 2. Disegna il testo "High Score: ..." con arcadeFont in stile Plain, 30pt
+        //Disegna il testo "High Score: ..."
         Font scoreFont = arcadeFont.deriveFont(Font.PLAIN, 30);
         g2.setFont(scoreFont);
         fm = g2.getFontMetrics();
@@ -482,18 +443,14 @@ private void drawHUD(Graphics g) {
         g2.setColor(Color.WHITE);
         g2.drawString(scoreText, scoreX, scoreY);
         
-        // 3. Disegna il pulsante "PLAY" con un rettangolo e il testo centrato al suo interno
+        // Disegna il pulsante "PLAY"
         int buttonWidth = 300;
         int buttonHeight = 80;
         int buttonX = (getWidth() - buttonWidth) / 2;
         int buttonY = 500;
         g2.setColor(Color.GREEN);
         g2.drawRect(buttonX, buttonY, buttonWidth, buttonHeight);
-        
-        // Aggiorna i bounds del pulsante se necessario
         playButtonBounds.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
-        
-        // Disegna il testo "PLAY" con arcadeFont Bold, 40pt, centrato nel rettangolo
         Font playFont = arcadeFont.deriveFont(Font.BOLD, 40);
         g2.setFont(playFont);
         fm = g2.getFontMetrics();
@@ -508,14 +465,8 @@ private void drawHUD(Graphics g) {
     
     private void drawGameOver(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        // Attiva l'antialiasing per il testo
-        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        
-        // Crea un overlay semitrasparente per oscurare lo sfondo
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRect(0, 0, WIDTH, HEIGHT);
-        
-        // Disegna il testo "GAME OVER" centrato in alto
         Font gameOverFont = arcadeFont.deriveFont(Font.BOLD, 72);
         g2.setFont(gameOverFont);
         g2.setColor(Color.RED);
@@ -525,7 +476,7 @@ private void drawHUD(Graphics g) {
         int gameOverY = 200;
         g2.drawString(gameOverText, gameOverX, gameOverY);
         
-        // Disegna lo score finale con un font più grande
+        // Disegna lo score finale
         Font scoreFont = arcadeFont.deriveFont(Font.PLAIN, 36);
         g2.setFont(scoreFont);
         g2.setColor(Color.WHITE);
@@ -535,19 +486,17 @@ private void drawHUD(Graphics g) {
         int scoreY = gameOverY + 60;
         g2.drawString(scoreText, scoreX, scoreY);
         
-        // Configura i pulsanti "Retry" e "Menu"
+        // Pulsanti "Retry" e "Menu"
         int buttonWidth = 200;
         int buttonHeight = 60;
         int spacing = 40; // spazio tra i due pulsanti
         int totalButtonsWidth = 2 * buttonWidth + spacing;
         int startX = (WIDTH - totalButtonsWidth) / 2;
         int buttonsY = scoreY + 80;
-        
         // Pulsante RETRY
         retryButtonBounds.setBounds(startX, buttonsY, buttonWidth, buttonHeight);
         g2.setColor(Color.GREEN);
-        g2.drawRect(startX, buttonsY, buttonWidth, buttonHeight);
-        
+        g2.drawRect(startX, buttonsY, buttonWidth, buttonHeight); 
         Font buttonFont = arcadeFont.deriveFont(Font.BOLD, 32);
         g2.setFont(buttonFont);
         FontMetrics fmButton = g2.getFontMetrics();
@@ -555,13 +504,11 @@ private void drawHUD(Graphics g) {
         int retryX = startX + (buttonWidth - fmButton.stringWidth(retryText)) / 2;
         int retryY = buttonsY + ((buttonHeight - fmButton.getHeight()) / 2) + fmButton.getAscent();
         g2.drawString(retryText, retryX, retryY);
-        
         // Pulsante MENU
         int menuX = startX + buttonWidth + spacing;
         menuButtonBounds.setBounds(menuX, buttonsY, buttonWidth, buttonHeight);
         g2.setColor(Color.GREEN);
-        g2.drawRect(menuX, buttonsY, buttonWidth, buttonHeight);
-        
+        g2.drawRect(menuX, buttonsY, buttonWidth, buttonHeight);     
         String menuText = "Menu";
         int menuTextX = menuX + (buttonWidth - fmButton.stringWidth(menuText)) / 2;
         int menuTextY = buttonsY + ((buttonHeight - fmButton.getHeight()) / 2) + fmButton.getAscent();
@@ -574,9 +521,6 @@ private void drawOptions(Graphics g) {
     g.fillRect(0, 0, getWidth(), getHeight());
 
     Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-    // === TITOLO CENTRATO ===
     g2.setFont(arcadeFont.deriveFont(Font.BOLD, 32));
     g2.setColor(Color.GREEN);
     String title = "Opzioni";
@@ -654,10 +598,7 @@ int clickableAreaSize = 25;
 int clickableX = iconX + (iconWidth - clickableAreaSize) / 2;
 int clickableY = iconY + (iconHeight - clickableAreaSize) / 2;
 
-// Disegna l'icona
 g.drawImage(muteToDraw, iconX, iconY, iconWidth, iconHeight, this);
-
-// Centra l'area cliccabile sulla parte interna dell’icona
 muteButtonArea.setBounds(clickableX, clickableY, clickableAreaSize, clickableAreaSize);
 }
     
@@ -665,11 +606,10 @@ muteButtonArea.setBounds(clickableX, clickableY, clickableAreaSize, clickableAre
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         
-        // Disegna un overlay semi-trasparente simile a quello di game over
+        // Sfondo semitrasparente
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fillRect(0, 0, WIDTH, HEIGHT);
         
-        // Testo "YOU WIN!"
         Font victoryFont = arcadeFont.deriveFont(Font.BOLD, 72);
         g2.setFont(victoryFont);
         g2.setColor(Color.YELLOW);
@@ -679,7 +619,6 @@ muteButtonArea.setBounds(clickableX, clickableY, clickableAreaSize, clickableAre
         int y = HEIGHT / 2 - 50;
         g2.drawString(victoryText, x, y);
         
-        // Score finale
         Font scoreFont = arcadeFont.deriveFont(Font.PLAIN, 36);
         g2.setFont(scoreFont);
         g2.setColor(Color.WHITE);
@@ -695,12 +634,10 @@ muteButtonArea.setBounds(clickableX, clickableY, clickableAreaSize, clickableAre
         int totalButtonsWidth = 2 * buttonWidth + spacing;
         int startX = (WIDTH - totalButtonsWidth) / 2;
         int buttonsY = scoreY + 80;
-        
         // Pulsante "Replay"
         replayVictoryBounds.setBounds(startX, buttonsY, buttonWidth, buttonHeight);
         g2.setColor(Color.GREEN);
         g2.drawRect(replayVictoryBounds.x, replayVictoryBounds.y, replayVictoryBounds.width, replayVictoryBounds.height);
-        
         Font buttonFont = arcadeFont.deriveFont(Font.BOLD, 32);
         g2.setFont(buttonFont);
         FontMetrics fmButton = g2.getFontMetrics();
@@ -708,13 +645,11 @@ muteButtonArea.setBounds(clickableX, clickableY, clickableAreaSize, clickableAre
         int replayTextX = startX + (buttonWidth - fmButton.stringWidth(replayText)) / 2;
         int replayTextY = buttonsY + ((buttonHeight - fmButton.getHeight()) / 2) + fmButton.getAscent();
         g2.drawString(replayText, replayTextX, replayTextY);
-        
         // Pulsante "Menu"
         int menuX = startX + buttonWidth + spacing;
         menuVictoryBounds.setBounds(menuX, buttonsY, buttonWidth, buttonHeight);
         g2.setColor(Color.GREEN);
         g2.drawRect(menuVictoryBounds.x, menuVictoryBounds.y, menuVictoryBounds.width, menuVictoryBounds.height);
-        
         String menuText = "Menu";
         int menuTextX = menuX + (buttonWidth - fmButton.stringWidth(menuText)) / 2;
         int menuTextY = buttonsY + ((buttonHeight - fmButton.getHeight()) / 2) + fmButton.getAscent();
@@ -723,8 +658,6 @@ muteButtonArea.setBounds(clickableX, clickableY, clickableAreaSize, clickableAre
 
     private void drawEnterNameScreen(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
-    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
     g2.setFont(arcadeFont.deriveFont(Font.BOLD, 36));
     g2.setColor(Color.WHITE);
 
@@ -764,11 +697,9 @@ public void mousePressed(MouseEvent e) {
     }
     public void setController(GameController controller) {
         this.controller = controller;
-        // Rimuovi tutti i KeyListener precedenti
         for (KeyListener kl : getKeyListeners()) {
             removeKeyListener(kl);
         }
-        // Aggiungi ora l'InputHandler corretto
         addKeyListener(new JHeliFire.controller.InputHandler(controller));
         // Aggiungi ora l'ActionListener al pulsante options
         if (optionsButton != null) {
@@ -808,17 +739,12 @@ public void mousePressed(MouseEvent e) {
     public Rectangle getReplayVictoryBounds() { return replayVictoryBounds; }
     public Rectangle getMenuVictoryBounds() { return menuVictoryBounds; }
 
-    /**
-     * Ferma il timer del gioco (usato per mettere in pausa quando si apre il menu opzioni)
-     */
     public void stopTimer() {
         if (timer != null && timer.isRunning()) {
             timer.stop();
         }
     }
-    /**
-     * Avvia o riavvia il timer del gioco (usato quando si esce dal menu opzioni)
-     */
+    
     public void startTimer() {
         if (timer != null && !timer.isRunning()) {
             timer.start();

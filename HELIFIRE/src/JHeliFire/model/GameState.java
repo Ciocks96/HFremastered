@@ -1,8 +1,7 @@
 package JHeliFire.model;
 
-/**
- * Stati del gioco centralizzati per evitare duplicazione e favorire disaccoppiamento.
- */
+
+// Stati del gioco centralizzati
 public final class GameState {
     public static final int START_SCREEN = 0;
     public static final int GAME_PLAY    = 1;

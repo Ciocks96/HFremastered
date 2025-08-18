@@ -117,7 +117,6 @@ public class SoundManager {
         return null;
     }
 
-    // Metodo per fermare la musica di sottofondo
     public static void stopBackgroundLoop() {
         if (backgroundClip != null && backgroundClip.isRunning()) {
             backgroundClip.stop();

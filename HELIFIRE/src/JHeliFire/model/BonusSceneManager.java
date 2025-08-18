@@ -20,10 +20,8 @@ public class BonusSceneManager {
     private boolean womanVisible = true;
     private int timer = 0;
     private int frameCounter = 0;
-    private boolean isPointBonus = false; // true se il bonus darà punti, false se darà una vita
-
     public BonusSceneManager() {
-        // Costruttore senza parametri
+        
     }
 
     public void update() {

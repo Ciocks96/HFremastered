@@ -29,9 +29,6 @@ public class BlueHeli extends Enemy {
     // ======================================
     private final int baseSpeed = 2;
 
-    // ======================================
-    // Costruttore
-    // ======================================
     public BlueHeli(int x, int y, int level, GameModel gameModel) {
         super(x, y, gameModel);
         this.level = level;
@@ -39,16 +36,12 @@ public class BlueHeli extends Enemy {
         this.height = LOGICAL_HEIGHT;
 
         // Calcola parametri basati sul livello
-        
         speed = (int) Math.min(baseSpeed * (1 + (level - 1) * SPEED_LEVEL_FACTOR), 5);
         shootProbability = Math.min(SHOOT_PROB_BASE + (level * SHOOT_PROB_LEVEL_FACTOR), 0.008);
         maxShootCooldown = Math.max(COOLDOWN_BASE - (level * COOLDOWN_LEVEL_FACTOR), 50);
 
     }
 
-    // ======================================
-    // Metodi di Update
-    // ======================================
     @Override
     public void update() {
         movement();
@@ -64,9 +57,6 @@ public class BlueHeli extends Enemy {
         }
     }
 
-    // ======================================
-    // Movimento
-    // ======================================
     @Override
     public void movement() {
         x -= speed;
@@ -75,9 +65,6 @@ public class BlueHeli extends Enemy {
         }
     }
 
-    // ======================================
-    // Sistema di Sparo
-    // ======================================
     @Override
     protected void shootAdvanced() {
         // Pattern di sparo del BlueHeli: spara 3 proiettili a ventaglio
@@ -97,15 +84,12 @@ public class BlueHeli extends Enemy {
     @Override
     protected void shoot() {
         if (level <= 3) {
-            shootBasic(); // Pattern base per i primi 3 livelli
+            shootBasic(); 
         } else {
-            shootAdvanced(); // Pattern avanzato dal livello 4 in poi
+            shootAdvanced(); 
         }
     }
 
-    // ======================================
-    // Getters
-    // ======================================
     @Override
     public int getScoreValue() {
         return 20;

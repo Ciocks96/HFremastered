@@ -3,9 +3,6 @@ package JHeliFire.model;
 import JHeliFire.utility.SoundManager;
 
 public class YellowHeli extends Enemy {
-    // ======================================
-    // Costanti
-    // ======================================
     public static final int LOGICAL_WIDTH = 64;
     public static final int LOGICAL_HEIGHT = 64;
     private static final int ANIM_FRAMES = 3;
@@ -29,42 +26,24 @@ public class YellowHeli extends Enemy {
     private static final double SHOOT_PROB_LEVEL_FACTOR = 0.0003;
     private static final double SHOOT_PROB_BASE = BASE_SHOOT_PROBABILITY;
 
-    // ======================================
-    // Enums
-    // ======================================
     private enum MovementState { LEFT, UP, RIGHT, DOWN, DIAGONAL }
-
-    // ======================================
-    // Stato di Movimento
-    // ======================================
     private MovementState state = MovementState.LEFT;
     private boolean facingLeft = true;
     private int targetX, targetY;
     private MovementState nextStateAfterDiagonal;
     
-    // ======================================
-    // Animazione
-    // ======================================
     private int animIndex = 0;
     private int animCounter = 0;
 
-    // ======================================
-    // Movimento e Livello
-    // ======================================
     private final int baseSpeed = 3;
     private final int verticalSpeed = 2;
 
-    // ======================================
-    // Sistema di Sparo a Raffica
-    // ======================================
+    // Variabili per il sistema di sparo avanzato
     private int burstShots = 0;
     private int burstMax = DEFAULT_BURST_MAX;
     private int burstDelay = DEFAULT_BURST_DELAY;
     private int burstCooldown = 0;
 
-    // ======================================
-    // Costruttore
-    // ======================================
     public YellowHeli(int x, int y, int level, GameModel gameModel) {
         super(x, y, gameModel);
         this.level = level;
@@ -74,13 +53,7 @@ public class YellowHeli extends Enemy {
         speed = Math.min((int)(baseSpeed * (1 + (level - 1) * SPEED_LEVEL_FACTOR)), 8);
         shootProbability = Math.min(SHOOT_PROB_BASE + Math.pow(level, SHOOT_PROB_LEVEL_POW) * SHOOT_PROB_LEVEL_FACTOR, 0.1); // Incrementato il limite massimo
         maxShootCooldown = Math.max(70 - level * 3, 50);
-
-        
     }
-
-    // ======================================
-    // Sistema di Sparo
-    // ======================================
 
 	 @Override
     protected void handleShooting() {
@@ -100,15 +73,15 @@ public class YellowHeli extends Enemy {
 
         // Dal livello 4 in poi, usa il sistema di raffica
         if (burstShots > 0) {
-            shootAdvanced(); // continua la raffica in corso
+            shootAdvanced(); 
             return;
         }
 
         if (Math.random() < shootProbability) {
             burstShots = burstMax;
-            shootAdvanced(); // spara subito il primo colpo
+            shootAdvanced(); 
         } else {
-            // Raffreddamento breve solo se non parte una nuova raffica
+            
             burstCooldown = 10; // 10 frame di pausa prima di riprovare
         }
     }
@@ -118,7 +91,7 @@ public class YellowHeli extends Enemy {
     protected void shoot() {
         if (level <= 3) {
             shootBasic(); // Pattern base per i primi 3 livelli
-            // Riproduci il suono dello sparo
+            
             SoundManager.playSound("/assets/sounds/enemyshot.wav");
         } else {
             shootAdvanced(); // Pattern avanzato dal livello 4 in poi
@@ -135,33 +108,23 @@ protected void shootAdvanced() {
             int bulletSpawnX = x + width / 2 - EnemyBullet.getBulletWidth() / 2;
             int bulletSpawnY = y + (int)(height * 0.65) + (burstMax - burstShots) * 5; // Offset verticale per sfalsare i proiettili
 
-            double dx = 0; // Nessun movimento orizzontale
+            double dx = 0; 
             double dy = BULLET_SPEED;
 
             EnemyBullet bullet = new EnemyBullet(bulletSpawnX, bulletSpawnY, dx, dy);
             gameModel.addEnemyBullet(bullet);
-
-            // Riproduci il suono dello sparo
             SoundManager.playSound("/assets/sounds/enemyshot.wav");
-
-            // Decrementa i colpi rimanenti e reimposta il cooldown
             burstShots--;
             burstCooldown = burstDelay;
         } else {
-            // Decrementa il cooldown
             burstCooldown--;
         }
     }
-
-    // Se la raffica è terminata, reimposta il cooldown generale
-    if (burstShots == 0) {
-        shootCooldown = Math.max(maxShootCooldown / 2, 20); // Cooldown più breve tra raffiche
-    }
+            if (burstShots == 0) {
+                shootCooldown = Math.max(maxShootCooldown / 2, 20);
+            }
 }
 
-    // ======================================
-    // Movimento
-    // ======================================
     @Override
     public void movement() {
         handleMovement();
@@ -272,9 +235,6 @@ protected void shootAdvanced() {
         }
     }
 
-    // ======================================
-    // Getters
-    // ======================================
     @Override
     public int getScoreValue() {
         return 40;

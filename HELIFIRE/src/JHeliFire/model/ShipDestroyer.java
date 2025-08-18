@@ -22,7 +22,7 @@ enum ShipDestroyerSpeed {
         return points;
     }
 
-    // Ottiene un tipo casuale di ShipDestroyer in base al livello con probabilità pesate
+    // tipo casuale di ShipDestroyer in base al livello con probabilità pesate
     public static ShipDestroyerSpeed getRandomForLevel(int level) {
         if (level == 2) {
             // Livello 2: solo SLOW
@@ -49,7 +49,7 @@ enum ShipDestroyerSpeed {
 
 public class ShipDestroyer extends Enemy {
     private boolean visible = true;
-    // Dimensioni logiche costanti
+
     public static final int LOGICAL_WIDTH = 64;
     public static final int LOGICAL_HEIGHT = 64;
     
@@ -60,7 +60,6 @@ public class ShipDestroyer extends Enemy {
         this.width = LOGICAL_WIDTH;
         this.height = LOGICAL_HEIGHT;
         
-        // Seleziona casualmente un tipo di ShipDestroyer tra quelli disponibili per il livello
         this.shipType = ShipDestroyerSpeed.getRandomForLevel(level);
         this.speed = shipType.getSpeed();
         
@@ -71,10 +70,9 @@ public class ShipDestroyer extends Enemy {
     
     @Override
     protected void movement() {
-        // Muove la nave da destra verso sinistra
+       
         x -= speed;
         
-        // Se esce dallo schermo a sinistra, segnala che non è più visibile
         if (x + width < 0) {
             visible = false;
         }

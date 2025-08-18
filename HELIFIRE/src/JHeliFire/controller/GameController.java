@@ -6,9 +6,7 @@ import JHeliFire.model.GameModel;
 import JHeliFire.view.GamePanel;
 
 public class GameController implements JHeliFire.model.GameModel.GameSoundListener {
-    // ======================================
-    // Fields
-    // ======================================
+
     private final GameModel model;
     private final GamePanel view;
     private int gameState;
@@ -19,9 +17,6 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
     private javax.swing.Timer victoryTimer;
     private javax.sound.sampled.Clip bonusClip;
 
-    // ======================================
-    // Constructor
-    // ======================================
     public GameController(GameModel model, JHeliFire.view.GamePanel view) {
         this.model = model;
         this.view = view;
@@ -29,9 +24,6 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
         this.model.setSoundListener(this); // Collega il listener sonoro
     }
 
-    // ======================================
-    // Core Game Loop Methods
-    // ======================================
     public void onTick() {
         switch (gameState) {
             case GAME_PLAY:
@@ -71,16 +63,13 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
         model.init();
     }
 
-    // ======================================
-    // Game State Management
-    // ======================================
     public int getCurrentState() {
         return gameState;
     }
-
+/* 
     public boolean shouldShowOptions() {
         return (gameState == GAME_PLAY || gameState == START_SCREEN || gameState == OPTIONS);
-    }
+    }*/
 
     private void checkPlayerState() {
         if (!model.getPlayer().isAlive()) {
@@ -279,17 +268,13 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
         }
     }
 
-    // ======================================
-    // Event Callbacks
-    // ======================================
+
     public void onBonusComplete() {
         boolean hasFullLives = model.getPlayer().getLives() == 3;
         
         if (hasFullLives) {
-            // Se il giocatore ha tutte le vite, assegna 500 punti
             model.addScore(500);
         } else {
-            // Se il giocatore ha perso delle vite, ne recupera una
             model.getPlayer().addLife();
         }
         
@@ -343,17 +328,11 @@ public class GameController implements JHeliFire.model.GameModel.GameSoundListen
         JHeliFire.utility.SoundManager.playExplosion();
     }
 
-    // ======================================
-    // Private Utility Methods
-    // ======================================
+    
     private void updateBackground() {
         view.setBackgroundX(view.getBackgroundX() - view.getBackgroundSpeed());
         if (view.getBackgroundX() <= -view.getWidth()) {
             view.setBackgroundX(0);
         }
     }
-/* 
-    private void startBonusScene() {
-        view.getBonusManager().setPointBonus(model.getPlayer().getLives() == 3);
-    }*/
 }
